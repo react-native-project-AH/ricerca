@@ -6,17 +6,27 @@ import * as imagePicker from "expo-image-picker"
 export default function App() {
 
 const [image,setImage]=useState([])
+
      useEffect(()=>{
-console.log(imagePicker)
+
+         console.log(imagePicker)
         const {status}=  imagePicker.requestMediaLibraryPermissionsAsync()
        if(status !=="granted") {
            alert("not allow")
        }
          async function loadData(){
-       const imageUri=await AsyncStorage.getItem("img")
-console.log(imageUri,"eeeeeee")
-             await setImage([...image,imageUri])
-      await console.log(image,"staaaaaaaaaaaaaaate")
+           try {
+
+               const imageUri=await AsyncStorage.getItem("img")
+               if(imageUri.length){
+               let e= JSON.parse(imageUri)
+          setImage(e)
+console.log(image,"dddddddddddd")
+               }
+           }catch (e){
+               console.log("useEfffect Error",e)
+           }
+
          }
          loadData()
      },[])
@@ -28,12 +38,12 @@ console.log(imageUri,"eeeeeee")
             quality:1
 
         })
+     // let dd=image
      setImage([...image,result.uri])
-      await  AsyncStorage.setItem("img",image)
-     console.log(result.uri)
-     if(!result.cancelled){
-         setImage(result.uri)
-     }
+     console.log(image)
+      await  AsyncStorage.setItem("img",JSON.stringify([...image,result.uri]))
+
+
   }
 
 
@@ -46,6 +56,7 @@ console.log(imageUri,"eeeeeee")
       <StatusBar style="auto" />
 
         {image.length ? <>
+            {console.log("finaaaal loooog",image)}
             {image.map((e,index)=>{
 
                 return(
@@ -67,7 +78,7 @@ console.log(imageUri,"eeeeeee")
 async function getItem(){
     try {
       let e  = await AsyncStorage.getItem("ah")
-       await console.log(e.JSON.parse())
+        console.log(JSON.parse(e))
     }catch (error){
         console.log("Erooooooooor")
     }
